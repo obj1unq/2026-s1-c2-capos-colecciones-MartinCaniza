@@ -1,15 +1,34 @@
 object rolando {
     var capacidadMaxima = 2
     var ubicacion = castilloDePiedra
-    var poderBase = 0
+    var poderBase = 5
     const morada = castilloDePiedra
+
+    const enemigos = #{}
 
     const artefactos = #{}
 
     const historial = []
 
+    method enemigos(){
+        return enemigos
+    }
+
+    method agregarEnemigo(enemigo){
+        enemigos.add(enemigo)
+    }
+
     method poderBase(){
         return poderBase
+    }
+
+    method poderDePelea(){
+        return poderBase + artefactos.sum({ artefacto => artefacto.poderQueAporta(self) })
+    }
+
+    method batallar(){
+        poderBase = poderBase + 1
+        artefactos.forEach({ artefacto => artefacto.usarArtefacto(self) })
     }
 
     method morada(){
@@ -59,6 +78,24 @@ object rolando {
     method historial(){
         return historial
     }
+
+    method enemigosPuedeVencer(){
+        return enemigos.filter({ enemigo => enemigo.poder() < self.poderDePelea() })
+
+    }
+
+    method moradasConquistables(){
+        return enemigos.filter({ enemigo => enemigo.poder() < self.poderDePelea() }).map({ enemigo => enemigo.morada() })
+    }
+  
+
+   method esPoderoso(){
+        return enemigos.all( {enemigo => enemigo.poder() < self.poderDePelea() } )
+   }
+
+   method contieneArtefactoFatal(enemigo){
+        return self.todosLosArtefactos().any({ artefacto => artefacto.poderQueAporta(self) > enemigo.poderBase() })
+   }
 }
 
 object espadaDelDestino{
@@ -215,3 +252,53 @@ object castilloDePiedra{
 
 }
 
+object caterina{
+    const poderBase = 28
+    const morada = fortalezaDeAcero
+
+    method morada(){
+        return morada
+    }
+
+    method poderBase(){
+        return poderBase
+    }
+}
+
+object archibaldo{
+    const poderBase = 16
+    const morada = palacioDeMarmol
+
+    method morada(){
+        return morada
+    }
+
+    method poderBase(){
+        return poderBase
+    }
+}
+
+object astra{
+    const poderBase = 14
+    const morada = torreDeMarfil
+
+    method morada(){
+        return morada
+    }
+
+    method poderBase(){
+        return poderBase
+    }
+}
+
+object fortalezaDeAcero{
+    
+}
+
+object palacioDeMarmol{
+
+}
+
+object torreDeMarfil{
+
+}
