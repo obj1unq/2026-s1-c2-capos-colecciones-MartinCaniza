@@ -2,7 +2,6 @@ object rolando {
     var capacidadMaxima = 2
     var ubicacion = castilloDePiedra
     var poderBase = 5
-    const morada = castilloDePiedra
 
     const enemigos = #{}
 
@@ -23,7 +22,11 @@ object rolando {
     }
 
     method poderDePelea(){
-        return poderBase + artefactos.sum({ artefacto => artefacto.poderQueAporta(self) })
+        return poderBase + self.poderTotalDePelea()
+    }
+
+    method poderTotalDePelea(){
+        return artefactos.sum({ artefacto => artefacto.poderQueAporta(self) })
     }
 
     method batallar(){
@@ -32,7 +35,7 @@ object rolando {
     }
 
     method morada(){
-        return morada
+        return ubicacion
     }
 
     method agregarArtefacto(artefacto){
@@ -53,13 +56,7 @@ object rolando {
         return ubicacion
     }
 
-    method ubicacion(_ubicacion){
-
-        ubicacion = _ubicacion        
-    
-    }
-
-    method dejarArtefactos(){
+    method llegarAMorada(){
         
         ubicacion.agregarArtefactos(artefactos)
         artefactos.clear()
@@ -101,16 +98,9 @@ object rolando {
 object espadaDelDestino{
     var fueUsada = false
 
-    method poderQueAporta(pj){
-        if ( fueUsada ){
-            return pj.poder() / 2
-             
-        } else{
-            return pj.poder(
-
-            )
-        }
-    }
+method poderQueAporta(personaje) {
+  return personaje.poder() / if (fueUsada) 2 else 1
+}
 
     method usarArtefacto(pj){
         if ( fueUsada ){
@@ -134,6 +124,14 @@ object libroDeHechicos{
     method agregarHechizo(hechizo){
         hechizos.add(hechizo)
     }
+
+
+    method poderQueAportax(personaje){
+
+        return  if (self.hechizos().isEmpty() ) {0}
+                 else {self.hechizos().head().poderQueAporta(personaje)}
+            
+        }
 
     method poderQueAporta(personaje){
 
@@ -196,13 +194,8 @@ object collarDivino{
     var cantidadBatallas = 0
     const puntos = 3
 
-    method poderQueAporta(pj){
-
-        if ( pj.poder() > 6 ){
-            return puntos + cantidadBatallas
-        } else{
-            return puntos
-        }
+    method poderQueAporta(personaje){
+        return if (personaje.poder() > 6) {puntos + cantidadBatallas} else {puntos}
     }
 
     method usarArtefacto(pj){
