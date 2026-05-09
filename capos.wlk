@@ -82,7 +82,7 @@ object rolando {
     }
 
     method moradasConquistables(){
-        return enemigos.filter({ enemigo => enemigo.poder() < self.poderDePelea() }).map({ enemigo => enemigo.morada() })
+        return self.enemigosPuedeVencer().map({ enemigo => enemigo.morada() })
     }
   
 
@@ -91,7 +91,7 @@ object rolando {
    }
 
    method contieneArtefactoFatal(enemigo){
-        return self.todosLosArtefactos().any({ artefacto => artefacto.poderQueAporta(self) > enemigo.poderBase() })
+        return artefactos.any({ artefacto => artefacto.poderQueAporta(self) > enemigo.poderBase() })
    }
 }
 
@@ -102,14 +102,8 @@ method poderQueAporta(personaje) {
   return personaje.poder() / if (fueUsada) 2 else 1
 }
 
-    method usarArtefacto(pj){
-        if ( fueUsada ){
-            return pj.poder() / 2
-             
-        } else{
-            fueUsada = true
-            return pj.poder()
-        }
+    method usarArtefacto(){
+        fueUsada = true
     }
 }
 
@@ -152,14 +146,10 @@ object libroDeHechicos{
         hechizos.remove( hechizos.head() )
     }
 
-    method usarHechizo(personaje){
+    method usar(personaje){
 
-        if (hechizos.isEmpty() ){
-            self.error("No hay hechizos disponibles.")
-        }else{
-        self.poderQueAporta(personaje) // ???? solo retorna un numero.
         self.eliminarPrimerHechizo()
-        }
+        
     }
 }
 
@@ -174,8 +164,8 @@ object bendicion{
 
 object invisibilidad{
 
-    method poderQueAporta(pj){
-        return pj.poderBase()
+    method poderQueAporta(personaje){
+        return personaje.poderBase()
     }
 
 }
@@ -190,25 +180,21 @@ object invocacion{
 
 }
 
-object collarDivino{
-    var cantidadBatallas = 0
-    const puntos = 3
 
-    method poderQueAporta(personaje){
-        return if (personaje.poder() > 6) {puntos + cantidadBatallas} else {puntos}
+object collarDivino {
+    var puntos = 3 
+
+    method poderQueAporta(personaje) {
+
+        return if (personaje.poder() > 6) { puntos } else { 3 }
     }
 
-    method usarArtefacto(pj){
+    method usarArtefacto(personaje) {
 
-        if ( pj.poder() > 6 ){
-            return puntos + cantidadBatallas
-        } else{
-            return puntos
-        }
-    
-        cantidadBatallas = cantidadBatallas + 1
+        puntos = puntos + 1
     }
 }
+
 
 object armaduraDeAcero{
     const poder = 6
