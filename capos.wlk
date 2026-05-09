@@ -9,6 +9,18 @@ object rolando {
 
     const historial = []
 
+    method poderBase(_poderBase){
+        poderBase = _poderBase
+    }
+
+    method capacidadMaxima(_capacidadMaxima){
+        capacidadMaxima = _capacidadMaxima
+    }
+
+    method artefactos(){
+        return artefactos
+    }
+
     method enemigos(){
         return enemigos
     }
@@ -43,8 +55,6 @@ object rolando {
         historial.add(artefacto)
         if (self.puedeLevantar()){
             artefactos.add(artefacto)
-        }else{
-            self.error("La mochila está llena.")
         }
     }
 
@@ -56,9 +66,9 @@ object rolando {
         return ubicacion
     }
 
-    method llegarAMorada(){
+    method llegarA(ubicacionNueva){
         
-        ubicacion.agregarArtefactos(artefactos)
+        ubicacionNueva.agregarArtefactos(artefactos)
         artefactos.clear()
 
     }
@@ -77,17 +87,17 @@ object rolando {
     }
 
     method enemigosPuedeVencer(){
-        return enemigos.filter({ enemigo => enemigo.poder() < self.poderDePelea() })
+        return enemigos.filter({ enemigo => enemigo.poderBase() < self.poderDePelea() }).asSet()
 
     }
 
     method moradasConquistables(){
-        return self.enemigosPuedeVencer().map({ enemigo => enemigo.morada() })
+        return self.enemigosPuedeVencer().map({ enemigo => enemigo.morada() }).asSet()
     }
   
 
    method esPoderoso(){
-        return enemigos.all( {enemigo => enemigo.poder() < self.poderDePelea() } )
+        return enemigos.all( {enemigo => enemigo.poderBase() < self.poderDePelea() } )
    }
 
    method contieneArtefactoFatal(enemigo){
@@ -98,16 +108,16 @@ object rolando {
 object espadaDelDestino{
     var fueUsada = false
 
-method poderQueAporta(personaje) {
-  return personaje.poder() / if (fueUsada) 2 else 1
-}
+    method poderQueAporta(personaje) {
+        return personaje.poderBase() / if (fueUsada) 2 else 1
+    }
 
-    method usarArtefacto(){
+    method usarArtefacto(personaje){
         fueUsada = true
     }
 }
 
-object libroDeHechicos{
+object libroDeHechizos{
 
     const hechizos = []
 
@@ -120,33 +130,20 @@ object libroDeHechicos{
     }
 
 
-    method poderQueAportax(personaje){
+    method poderQueAporta(personaje){
 
         return  if (self.hechizos().isEmpty() ) {0}
                  else {self.hechizos().head().poderQueAporta(personaje)}
             
         }
 
-    method poderQueAporta(personaje){
-
-        if ( self.hechizos().isEmpty() ){
-             return 0
-        } else {
-
-
-
-           return self.hechizos().head().poderQueAporta(personaje)
-
-            
-        }
-    }
 
     method eliminarPrimerHechizo(){
 
         hechizos.remove( hechizos.head() )
     }
 
-    method usar(personaje){
+    method usarArtefacto(personaje){
 
         self.eliminarPrimerHechizo()
         
@@ -156,7 +153,7 @@ object libroDeHechicos{
 object bendicion{
     const poder = 4
 
-    method poderQueAporta(){
+    method poderQueAporta(personaje){
         return poder
     }
 
@@ -174,7 +171,7 @@ object invocacion{
 
     method poderQueAporta(personaje){
 
-        return personaje.morada().artefactoMasPoderoso(personaje).poderQueAporta()
+        return personaje.morada().artefactoMasPoderoso(personaje).poderQueAporta(personaje)
     }
 
 
@@ -186,7 +183,7 @@ object collarDivino {
 
     method poderQueAporta(personaje) {
 
-        return if (personaje.poder() > 6) { puntos } else { 3 }
+        return if (personaje.poderBase() > 6) { puntos } else { 3 }
     }
 
     method usarArtefacto(personaje) {
@@ -199,11 +196,11 @@ object collarDivino {
 object armaduraDeAcero{
     const poder = 6
 
-    method poderQueAporta(){
+    method poderQueAporta(personaje){
         return poder
     }
     
-    method usarArtefacto(){
+    method usarArtefacto(personaje){
         return poder
     }
 }
