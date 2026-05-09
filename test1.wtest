@@ -1,0 +1,156 @@
+import capos.*
+// assert.that (condicion) por ejemplo para saber si x contiene a y
+
+
+describe "Test general" {
+    test "Rolando recolecta un artefacto" {
+        rolando.agregarArtefacto(espadaDelDestino)
+        rolando.agregarArtefacto(libroDeHechizos)
+        assert.equals(2, rolando.artefactos().size()) 
+        assert.that(rolando.artefactos().contains(espadaDelDestino))
+        assert.that(rolando.artefactos().contains(libroDeHechizos))
+        rolando.agregarArtefacto(collarDivino)
+        assert.notThat(rolando.artefactos().contains(collarDivino))
+    }
+
+    test "Rolando encuentra artefactos, se queda sin espacio en la mochila, los deja en su morada y recolecta mas" {
+        rolando.agregarArtefacto(espadaDelDestino)
+        rolando.agregarArtefacto(libroDeHechizos)
+        rolando.llegarA(castilloDePiedra) 
+        rolando.agregarArtefacto(collarDivino) 
+        rolando.llegarA(castilloDePiedra)
+        assert.equals(3, castilloDePiedra.artefactos().size())
+        assert.that(castilloDePiedra.artefactos().contains(espadaDelDestino))
+        assert.that(castilloDePiedra.artefactos().contains(libroDeHechizos))
+        assert.that(castilloDePiedra.artefactos().contains(collarDivino))
+        assert.that(rolando.artefactos().isEmpty())
+       
+
+    }
+
+  test "Rolando se encuentra con varios artefactos y aunque no los guarda a todos en la mochila, quedan en su historial" {
+    rolando.agregarArtefacto(espadaDelDestino)
+    rolando.agregarArtefacto(libroDeHechizos)
+    rolando.agregarArtefacto(collarDivino) 
+    rolando.llegarA(castilloDePiedra) 
+    rolando.agregarArtefacto(armaduraDeAcero)
+    rolando.agregarArtefacto(collarDivino)
+    assert.equals(5, rolando.historial().size())
+  }
+  test "Quiero saber si puedo saber el total de las posesiones de Rolando y si no tiene una en espefico" {
+    rolando.agregarArtefacto(espadaDelDestino)
+    rolando.agregarArtefacto(collarDivino)
+    assert.equals(2, rolando.artefactos().size())
+    rolando.llegarA(castilloDePiedra)
+    rolando.agregarArtefacto(armaduraDeAcero)
+    assert.equals(1, rolando.artefactos().size())
+    assert.notThat( rolando.artefactos().contains(libroDeHechizos))
+  }
+}
+
+
+describe "Ejemplos de batalla" {
+    test "Simulando una batalla" {
+        rolando.poderBase(5) 
+        rolando.capacidadMaxima(3)
+        rolando.agregarArtefacto(espadaDelDestino)
+        rolando.agregarArtefacto(armaduraDeAcero)
+        rolando.agregarArtefacto(collarDivino)
+        assert.equals(5, espadaDelDestino.poderQueAporta(rolando))
+        assert.equals(6, armaduraDeAcero.poderQueAporta(rolando))
+        assert.equals(3, collarDivino.poderQueAporta(rolando))
+        rolando.batallar()
+        assert.equals(6, rolando.poderBase())
+        assert.equals(3, espadaDelDestino.poderQueAporta(rolando))
+        assert.equals(6, armaduraDeAcero.poderQueAporta(rolando))
+        assert.equals(3, collarDivino.poderQueAporta(rolando))
+        rolando.batallar()
+        assert.equals(7, rolando.poderBase())
+        assert.equals(3.5, espadaDelDestino.poderQueAporta(rolando))
+        assert.equals(6, armaduraDeAcero.poderQueAporta(rolando))
+        assert.equals(5, collarDivino.poderQueAporta(rolando))
+        rolando.batallar() 
+        assert.equals(8, rolando.poderBase())
+        assert.equals(4, espadaDelDestino.poderQueAporta(rolando))
+        assert.equals(6, armaduraDeAcero.poderQueAporta(rolando))
+        assert.equals(6, collarDivino.poderQueAporta(rolando))
+
+    }
+    test "Simular poder de habilidad" {
+        rolando.poderBase(5) 
+        rolando.capacidadMaxima(3) 
+        rolando.agregarArtefacto(espadaDelDestino)
+        rolando.agregarArtefacto(armaduraDeAcero)
+        rolando.agregarArtefacto(collarDivino)
+        assert.equals(19, rolando.poderDePelea())
+    }
+}
+
+describe "Testeo libro de hechizos y enemigos " {
+  test "testeo hechizo por hechizo" { 
+    rolando.poderBase(5) 
+    rolando.agregarArtefacto(espadaDelDestino)
+    rolando.agregarArtefacto(armaduraDeAcero)
+    rolando.agregarArtefacto(collarDivino)
+    rolando.llegarA(castilloDePiedra)
+    rolando.agregarArtefacto(libroDeHechizos)
+    libroDeHechizos.agregarHechizo(bendicion)
+    libroDeHechizos.agregarHechizo(invisibilidad)
+    libroDeHechizos.agregarHechizo(invocacion)
+    assert.equals(4, libroDeHechizos.poderQueAporta(rolando))
+    rolando.batallar()
+    assert.equals(6, libroDeHechizos.poderQueAporta(rolando))
+    rolando.batallar()
+    assert.equals(7, libroDeHechizos.poderQueAporta(rolando))
+    rolando.batallar()
+    assert.equals(0, libroDeHechizos.poderQueAporta(rolando))
+    }
+  test "Le gana a dos y se queda con su morada" {
+    rolando.poderBase(5)
+    rolando.capacidadMaxima(3)
+    rolando.agregarArtefacto(espadaDelDestino)
+    rolando.agregarArtefacto(armaduraDeAcero)
+    rolando.agregarArtefacto(collarDivino)
+    assert.equals(19, rolando.poderDePelea())
+    rolando.agregarEnemigo(caterina)
+    rolando.agregarEnemigo(archibaldo)
+    rolando.agregarEnemigo(astra)
+    assert.equals(#{archibaldo, astra}, rolando.enemigosPuedeVencer())
+    assert.equals(#{palacioDeMarmol, torreDeMarfil}, rolando.moradasConquistables())
+  }
+
+}
+
+
+describe "Testeo sobre que tan poderoso es Rolando" {
+  test "Rolando es poderoso" {
+    rolando.poderBase(5)
+    rolando.capacidadMaxima(3)
+    rolando.agregarArtefacto(espadaDelDestino)
+    rolando.agregarArtefacto(armaduraDeAcero)
+    rolando.agregarArtefacto(collarDivino)
+    rolando.agregarEnemigo(caterina)
+    rolando.agregarEnemigo(archibaldo)
+    rolando.agregarEnemigo(astra)
+    assert.notThat(rolando.esPoderoso())
+    rolando.poderBase(10)
+    assert.that(rolando.esPoderoso())
+
+  }
+}
+
+describe "Testeo artefacto fatal" {
+  test "puede vencer a astra pero no a caterina" {
+    rolando.poderBase(15)
+    rolando.capacidadMaxima(3)
+    rolando.agregarArtefacto(espadaDelDestino)
+    rolando.agregarArtefacto(armaduraDeAcero)
+    rolando.agregarArtefacto(collarDivino)
+    rolando.agregarEnemigo(caterina)
+    rolando.agregarEnemigo(archibaldo)
+    rolando.agregarEnemigo(astra)
+    assert.that(rolando.contieneArtefactoFatal(astra))
+    assert.that(rolando.artefactos().contains(espadaDelDestino))
+    assert.notThat(rolando.contieneArtefactoFatal(caterina))
+  }
+}

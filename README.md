@@ -36,14 +36,14 @@ En este momento los artefactos que tiene Rolando son la espada del destino y el 
 
 ### 1.2 Castillo de piedra
 
-El castillo de piedra es donde Rolando vive. Es tan grande que allí no hay límite para almacenar artefactos. Cuando Rolando llega al castillo de piedra, guarda en él todos los artefactos que lleva consigo, liberando espacio para poder recolectar nuevos. 
+El castillo de piedra es donde Rolando vive. Es tan grande que allí no hay límite para almacenar artefactos. Cuando Rolando llega al castillo de piedra, gndo espacio paruarda en él todos los artefactos que lleva consigo, liberaa poder recolectar nuevos. 
 
 #### Requerimientos
 
 Incorporar a los objetos el comportamiento que permita:
 
 - Hacer que rolando llegue a su hogar (el castillo)
-- Saber qué artefactos hay en el castillo
+- Saber qué artefactos hay en el castillo 
 
 #### Ejemplo:
  1. Rolando encuentra la espada del destino (la recolecta)
